@@ -22,7 +22,6 @@ jobs:
       - name: Reconstruct, verify, and import repository
         shell: bash
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           EXPECTED_BUNDLE_SHA256: 0350a26adc1b56515cc26720238eb7e66a6a45f97278161a429505b2074ff50b
           EXPECTED_HEAD: 615e06da449984159cf4f3bd2d5f0e86343b3ea1
           EXPECTED_TAG_COMMIT: 615e06da449984159cf4f3bd2d5f0e86343b3ea1
@@ -48,14 +47,32 @@ jobs:
           git -C /tmp/bundle-verifier init --quiet
           git -C /tmp/bundle-verifier bundle verify /tmp/s70-v333-aacp-lab.bundle
 
-          git clone --quiet /tmp/s70-v333-aacp-lab.bundle /tmp/s70-v333-aacp-lab
-          cd /tmp/s70-v333-aacp-lab
+          git clone --quiet /tmp/s70-v333-aacp-lab.bundle /tmp/foundation-source
+          test "$(git -C /tmp/foundation-source rev-parse HEAD)" = "${EXPECTED_HEAD}"
+          test "$(git -C /tmp/foundation-source rev-parse 'refs/tags/v0.1.0-foundation^{commit}')" = "${EXPECTED_TAG_COMMIT}"
+          test "$(git -C /tmp/foundation-source ls-tree HEAD third_party/open-headunit | awk '{print $1}')" = "160000"
+          test "$(git -C /tmp/foundation-source ls-tree HEAD third_party/open-headunit | awk '{print $3}')" = "${EXPECTED_SUBMODULE}"
 
-          test "$(git rev-parse HEAD)" = "${EXPECTED_HEAD}"
-          test "$(git rev-parse 'refs/tags/v0.1.0-foundation^{commit}')" = "${EXPECTED_TAG_COMMIT}"
-          test "$(git ls-tree HEAD third_party/open-headunit | awk '{print $1}')" = "160000"
-          test "$(git ls-tree HEAD third_party/open-headunit | awk '{print $3}')" = "${EXPECTED_SUBMODULE}"
+          CURRENT_HEAD="$(git rev-parse HEAD)"
+          IMPORTER_BLOB="$(git rev-parse HEAD:.github/workflows/import-foundation.yml)"
 
-          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          git push --force origin refs/heads/main:refs/heads/main
-          git push --force origin refs/tags/v0.1.0-foundation:refs/tags/v0.1.0-foundation
+          git fetch --quiet /tmp/s70-v333-aacp-lab.bundle refs/heads/main:refs/remotes/foundation/main
+          SOURCE_HEAD="$(git rev-parse refs/remotes/foundation/main)"
+          test "${SOURCE_HEAD}" = "${EXPECTED_HEAD}"
+
+          git read-tree "${SOURCE_HEAD}"
+          while IFS= read -r workflow_path; do
+            git update-index --force-remove "${workflow_path}"
+          done < <(git ls-tree -r --name-only "${SOURCE_HEAD}" .github/workflows)
+
+          git update-index --add --cacheinfo "100644,${IMPORTER_BLOB},.github/workflows/import-foundation.yml"
+          NEW_TREE="$(git write-tree)"
+
+          test "$(git ls-tree "${NEW_TREE}" third_party/open-headunit | awk '{print $1}')" = "160000"
+          test "$(git ls-tree "${NEW_TREE}" third_party/open-headunit | awk '{print $3}')" = "${EXPECTED_SUBMODULE}"
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          NEW_COMMIT="$(printf '%s\n' 'feat: import S70 v333 AACP foundation' | git commit-tree "${NEW_TREE}" -p "${CURRENT_HEAD}")"
+
+          git push origin "${NEW_COMMIT}:refs/heads/main"
