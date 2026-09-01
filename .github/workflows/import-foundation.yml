@@ -26,6 +26,7 @@ jobs:
           EXPECTED_BUNDLE_SHA256: 0350a26adc1b56515cc26720238eb7e66a6a45f97278161a429505b2074ff50b
           EXPECTED_HEAD: 615e06da449984159cf4f3bd2d5f0e86343b3ea1
           EXPECTED_TAG_COMMIT: 615e06da449984159cf4f3bd2d5f0e86343b3ea1
+          EXPECTED_SUBMODULE: 2f07eeec18d3357e865e761ec76423943dfd880e
         run: |
           set -euo pipefail
 
@@ -52,8 +53,8 @@ jobs:
 
           test "$(git rev-parse HEAD)" = "${EXPECTED_HEAD}"
           test "$(git rev-parse 'refs/tags/v0.1.0-foundation^{commit}')" = "${EXPECTED_TAG_COMMIT}"
-          test "$(git ls-tree HEAD receiver/open-headunit | awk '{print $1}')" = "160000"
-          test "$(git ls-tree HEAD receiver/open-headunit | awk '{print $3}')" = "2f07eeec18d3357e865e761ec76423943dfd880e"
+          test "$(git ls-tree HEAD third_party/open-headunit | awk '{print $1}')" = "160000"
+          test "$(git ls-tree HEAD third_party/open-headunit | awk '{print $3}')" = "${EXPECTED_SUBMODULE}"
 
           git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
           git push --force origin refs/heads/main:refs/heads/main
