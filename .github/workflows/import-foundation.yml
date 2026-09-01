@@ -1,0 +1,60 @@
+name: Import prepared S70 v333 foundation
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-foundation:
+    if: github.repository == 'Haochihaochi/s70-v333-aacp-lab'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out staging branch
+        uses: actions/checkout@v4
+
+      - name: Reconstruct, verify, and import repository
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EXPECTED_BUNDLE_SHA256: 0350a26adc1b56515cc26720238eb7e66a6a45f97278161a429505b2074ff50b
+          EXPECTED_HEAD: 615e06da449984159cf4f3bd2d5f0e86343b3ea1
+          EXPECTED_TAG_COMMIT: 615e06da449984159cf4f3bd2d5f0e86343b3ea1
+        run: |
+          set -euo pipefail
+
+          cat \
+            .foundation-import/corrected/part00.* \
+            .foundation-import/bundle.part.01 \
+            .foundation-import/bundle.part.02 \
+            .foundation-import/bundle.part.03 \
+            .foundation-import/bundle.part.04 \
+            .foundation-import/bundle.part.05 \
+            .foundation-import/corrected/part06.* \
+            > /tmp/s70-v333-aacp-lab.bundle.b64
+
+          test "$(wc -c < /tmp/s70-v333-aacp-lab.bundle.b64)" -eq 44012
+          base64 --decode /tmp/s70-v333-aacp-lab.bundle.b64 > /tmp/s70-v333-aacp-lab.bundle
+          echo "${EXPECTED_BUNDLE_SHA256}  /tmp/s70-v333-aacp-lab.bundle" | sha256sum --check --strict
+
+          mkdir /tmp/bundle-verifier
+          git -C /tmp/bundle-verifier init --quiet
+          git -C /tmp/bundle-verifier bundle verify /tmp/s70-v333-aacp-lab.bundle
+
+          git clone --quiet /tmp/s70-v333-aacp-lab.bundle /tmp/s70-v333-aacp-lab
+          cd /tmp/s70-v333-aacp-lab
+
+          test "$(git rev-parse HEAD)" = "${EXPECTED_HEAD}"
+          test "$(git rev-parse 'refs/tags/v0.1.0-foundation^{commit}')" = "${EXPECTED_TAG_COMMIT}"
+          test "$(git ls-tree HEAD receiver/open-headunit | awk '{print $1}')" = "160000"
+          test "$(git ls-tree HEAD receiver/open-headunit | awk '{print $3}')" = "2f07eeec18d3357e865e761ec76423943dfd880e"
+
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git push --force origin refs/heads/main:refs/heads/main
+          git push --force origin refs/tags/v0.1.0-foundation:refs/tags/v0.1.0-foundation
