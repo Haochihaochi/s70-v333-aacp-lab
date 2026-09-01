@@ -1,0 +1,37 @@
+name: Sanitized v333 device profile
+about: Share read-only observations without proprietary files or identifiers
+labels: [device-profile]
+body:
+  - type: markdown
+    attributes:
+      value: Do not attach firmware, APKs, VINs, serial numbers, keys, certificates or unredacted logs.
+  - type: input
+    id: software
+    attributes:
+      label: Software Version
+      placeholder: SWSS...00333
+    validations:
+      required: true
+  - type: input
+    id: hardware
+    attributes:
+      label: Hardware Version
+      placeholder: Exact visible value; redact only unique identifiers
+    validations:
+      required: true
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Test environment
+      options:
+        - Bench IHU
+        - Parked vehicle
+    validations:
+      required: true
+  - type: textarea
+    id: summary
+    attributes:
+      label: Sanitized summary.md
+      description: Paste the generated summary, not the raw profile directory.
+    validations:
+      required: true

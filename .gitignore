@@ -1,0 +1,47 @@
+# Build and device outputs
+artifacts/
+dist/
+.test-output/
+
+# Android/Gradle
+.gradle/
+**/build/
+local.properties
+*.iml
+.idea/
+
+# Never commit vehicle or firmware material
+*.apk
+*.aab
+*.img
+*.bin
+*.rom
+*.dump
+*.dmp
+*.zip
+*.7z
+*.rar
+*.tar
+*.tar.gz
+*.tgz
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.pem
+*.key
+*.der
+*.crt
+*.cer
+
+# OS/editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
