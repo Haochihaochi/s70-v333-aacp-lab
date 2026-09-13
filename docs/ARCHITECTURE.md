@@ -1,5 +1,7 @@
 # Architecture
 
+> Historical foundation overview. For the September 2026 owner-specific design, use the [system architecture](specs/SYSTEM_ARCHITECTURE.md) and [requirements](specs/REQUIREMENTS.md). The new package defines the proposed release gates; this earlier overview does not establish that target access or recovery is available.
+
 ## Separation of concerns
 
 The project deliberately separates the **receiver** from the **installation/access mechanism**.

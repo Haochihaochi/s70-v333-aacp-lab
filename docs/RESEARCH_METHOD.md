@@ -1,5 +1,7 @@
 # v333 research method
 
+> Read alongside the dated [research and tool assessment](specs/RESEARCH.md) and [recovery design](specs/RECOVERY.md). The current owner has no developer access or matching bench IHU; the commands below depend on prerequisites that are not yet available.
+
 ## Question 1: Can the receiver run?
 
 Answer this independently of sideload access. Build the pinned receiver, run it on Android 9 hardware and establish codec, display and USB behaviour.

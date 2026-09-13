@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "id": "SDD-0001",
+  "status": "complete",
+  "scope": "tooling",
+  "requirements": [
+    "GOV-01",
+    "GOV-02",
+    "GOV-03",
+    "GOV-04",
+    "GOV-05",
+    "GOV-06",
+    "GOV-07"
+  ],
+  "specifications": {
+    "requirements": "docs/changes/SDD-0001.md",
+    "product": "docs/changes/SDD-0001.md",
+    "technical": "docs/changes/SDD-0001.md"
+  },
+  "code_paths": [
+    "tools/sdd_guard.py",
+    "tests/test_sdd_guard.py",
+    "Makefile",
+    ".github/workflows/foundation.yml",
+    ".githooks/pre-commit"
+  ],
+  "review": {
+    "by": "Codex, 2026-09-13",
+    "basis": "Owner authorized repository SDD safeguards. Requirements, product behavior, technical design and cases G01–G11 were written and reviewed before implementation. Tooling scope does not require or claim vehicle access. Bootstrap readiness checked manually until the new checker exists."
+  },
+  "tests": [
+    {
+      "id": "G01-G10",
+      "requirements": [
+        "GOV-03",
+        "GOV-04",
+        "GOV-05",
+        "GOV-06"
+      ],
+      "level": "host",
+      "kind": "automated",
+      "test_file": "tests/test_sdd_guard.py",
+      "procedure": "python -m unittest discover -s tests -v; exercise CLI readiness/completion and staged/base snapshots in temporary Git repositories",
+      "expected": "Documented positive cases pass; missing, malformed, stale, unstaged and uncovered evidence fails with no mutations to test repos",
+      "result": "pass",
+      "evidence": "docs/development/evidence/SDD-0001.md"
+    },
+    {
+      "id": "G11",
+      "requirements": [
+        "GOV-01",
+        "GOV-02",
+        "GOV-07"
+      ],
+      "level": "host",
+      "kind": "manual",
+      "procedure": "Review AGENTS and SKILL against the four scenario requests in G11; validate skill frontmatter and local document links",
+      "expected": "SDD and test-first planning are mandatory; wired scope, distinct CarPlay feasibility and physical completion gates remain explicit",
+      "result": "pass",
+      "evidence": "docs/development/evidence/SDD-0001.md"
+    }
+  ],
+  "code_sha256": {
+    ".githooks/pre-commit": "e9933b03fb1d80069c9798b1308fbe649274699d6dbd8ddf7321e29fd00be35b",
+    ".github/workflows/foundation.yml": "ef9a5a7b398b486c742857288ad43e91ab19c84cbb05e83305c6bbbcfc94c157",
+    "Makefile": "ada0f2af9be6a99f5fc35f423a7cf02237ddd4f7f3834c5c7691b867f72f3eac",
+    "tests/test_sdd_guard.py": "5fbf65748432893bc14c167df5ec4b5fbc180da3c355e9baa56d8db31cab153a",
+    "tools/sdd_guard.py": "9ab15664c53b5896a006a1499c9a98f0751b1d0f6d90b03de3863dd04a60b88c"
+  }
+}

@@ -1,4 +1,9 @@
-#!/usr/bin/env bash
-set -euo pipefail
-python3 tools/repo_guard.py
-python3 -m unittest discover -s tests -q
+#!/bin/sh
+set -eu
+sdd_python="${PYTHON:-$(git config --get sdd.python || true)}"
+if [ -z "$sdd_python" ]; then
+  sdd_python=python3
+fi
+"$sdd_python" tools/repo_guard.py
+"$sdd_python" tools/sdd_guard.py --staged
+"$sdd_python" -m unittest discover -s tests -q

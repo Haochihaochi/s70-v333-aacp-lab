@@ -1,5 +1,7 @@
 # Roadmap
 
+> Foundation roadmap retained for reference. The owner-specific [requirements gates](specs/REQUIREMENTS.md#5-gates-and-present-status) now govern progression. Matching-bench validation and independent recovery must precede installation in the owner's vehicle; software-lab work may proceed while access is investigated.
+
 ## Milestone 0 — Foundation
 
 - [x] Pin an actively maintained Android Auto receiver.

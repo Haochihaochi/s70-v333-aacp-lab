@@ -12,6 +12,7 @@ test:
 
 guard:
 	$(PYTHON) tools/repo_guard.py
+	$(PYTHON) tools/sdd_guard.py
 
 build:
 	./scripts/build-open-headunit.sh

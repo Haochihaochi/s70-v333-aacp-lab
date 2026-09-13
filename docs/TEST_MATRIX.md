@@ -1,5 +1,7 @@
 # Test matrix
 
+> For the complete September 2026 test design, environment limits, and requirement traceability, see the [validation and laboratory plan](specs/VALIDATION.md). This foundation checklist alone is insufficient for vehicle qualification.
+
 All in-car tests must be performed while parked.
 
 | Area | Baseline evidence | Pass condition |

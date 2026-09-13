@@ -4,6 +4,14 @@ A reproducible, safety-first foundation for researching **no-dongle Android Auto
 
 > **Current scope:** Android Auto receiver integration first. Native Apple CarPlay is not implemented because no suitable open-source, licence-clear receiver is available for this Android 9 target.
 
+## Requirements and architecture — September 2026
+
+Development follows [AGENTS.md](AGENTS.md), the [SDD workflow](docs/development/SDD_WORKFLOW.md), and the repository skill [s70-v333-sdd](.agents/skills/s70-v333-sdd/SKILL.md). Requirements, product behavior, technical design and test cases precede code. The SDD guard checks change coverage and recorded completion evidence; its success is not vehicle qualification. Consult the [integration knowledge map](docs/development/INTEGRATION_KNOWLEDGE.md) before extracting new findings into the canonical requirements.
+
+The current owner target is a **2024 S70 Flagship on v333, wired Android Auto first**, with no existing developer access and no matching spare IHU. The [design package](docs/specs/README.md) defines the requirements, proposed system architecture, recovery design, test laboratory, and dated research/tool assessment.
+
+Start with the [requirements specification](docs/specs/REQUIREMENTS.md). Installation access, exact hardware compatibility, and independent recovery remain unverified. The helpers below are research scaffolding; they do not yet implement the proposed commissioning/recovery gates and are not a qualified vehicle installer.
+
 ## Project status
 
 | Track | Status |

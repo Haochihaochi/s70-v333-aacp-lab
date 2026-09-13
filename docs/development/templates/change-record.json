@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "id": "CHANGE-ID",
+  "status": "draft",
+  "scope": "integration",
+  "requirements": ["REQUIREMENT-ID"],
+  "specifications": {
+    "requirements": "docs/specs/REQUIREMENTS.md",
+    "product": "docs/changes/CHANGE-ID.md",
+    "technical": "docs/changes/CHANGE-ID.md"
+  },
+  "code_paths": ["path/to/changed-file.py"],
+  "review": {"by": "", "basis": ""},
+  "tests": [
+    {
+      "id": "TEST-ID",
+      "requirements": ["REQUIREMENT-ID"],
+      "level": "host",
+      "kind": "automated",
+      "test_file": "tests/test_changed_behavior.py",
+      "procedure": "Replace with the exact test command or steps",
+      "expected": "Replace with an observable outcome",
+      "result": "planned",
+      "evidence": null
+    }
+  ],
+  "code_sha256": {}
+}

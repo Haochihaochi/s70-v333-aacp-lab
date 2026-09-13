@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -20,5 +22,28 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Repository guard
         run: python tools/repo_guard.py
+      - name: Specification-driven development guard
+        shell: bash
+        env:
+          SDD_EVENT: ${{ github.event_name }}
+          SDD_PR_BASE: ${{ github.event.pull_request.base.sha }}
+          SDD_PUSH_BASE: ${{ github.event.before }}
+          # Last foundation commit before SDD governance was introduced.
+          SDD_BASELINE: dd4b0f68ba4da15391bb8b8e1dcfdf2ae70a0746
+        run: |
+          if [[ "$SDD_EVENT" == "pull_request" ]]; then
+            sdd_base="$SDD_PR_BASE"
+          elif [[ "$SDD_EVENT" == "push" ]]; then
+            sdd_base="$SDD_PUSH_BASE"
+          elif git rev-parse --verify HEAD^ >/dev/null 2>&1 &&
+               git merge-base --is-ancestor "$SDD_BASELINE" HEAD^; then
+            sdd_base="$(git rev-parse HEAD^)"
+          else
+            sdd_base="$SDD_BASELINE"
+          fi
+          if [[ -z "$sdd_base" || "$sdd_base" =~ ^0+$ ]]; then
+            sdd_base="$SDD_BASELINE"
+          fi
+          python tools/sdd_guard.py --base "$sdd_base"
       - name: Bash syntax
         run: bash -n scripts/*.sh scripts/lib/*.sh .githooks/pre-commit
